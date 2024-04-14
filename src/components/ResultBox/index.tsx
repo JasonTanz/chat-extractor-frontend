@@ -22,7 +22,8 @@ export const ResultBox: React.FC<Props> = (props) => {
         obj: ResultStructure | UserRanking,
         isOneFile: boolean
     ): React.ReactNode => {
-        if (isEmpty(obj)) return <></>;
+        if (isEmpty(obj))
+            return <Typography>Not a valid chat structure</Typography>;
 
         if (isOneFile) {
             const firstValue = Object.values(obj)[0];
@@ -51,7 +52,12 @@ export const ResultBox: React.FC<Props> = (props) => {
 
     // =============== RENDER FUNCTIONS
     const renderResultData = () => {
-        if (!data) return null;
+        if (!data || size(data) === 0)
+            return (
+                <Typography fontSize={".875rem"} color="#6B7280">
+                    Please upload files
+                </Typography>
+            );
 
         if (size(data) === 1) {
             const singleData = data[0];
@@ -79,7 +85,11 @@ export const ResultBox: React.FC<Props> = (props) => {
                 border="1px solid #E5E5E5"
                 p={2}
                 borderRadius={2}
-                maxHeight={"25rem"}
+                maxHeight={{
+                    xs: "5rem",
+                    sm: "8rem",
+                    md: "25rem",
+                }}
                 sx={{
                     overflowY: "auto",
                 }}

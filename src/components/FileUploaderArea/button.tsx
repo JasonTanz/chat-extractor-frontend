@@ -1,7 +1,7 @@
 import { CloudUploadOutlined } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
-import { useEffect } from "react";
 import { FileUploadButtonProps } from "./@types/button";
+import { fileSize } from "chat-extractor/container/ChatExtractor/validation";
 
 /**
  * ===========================
@@ -9,25 +9,7 @@ import { FileUploadButtonProps } from "./@types/button";
  * ===========================
  */
 export const FileUploadButton: React.FC<FileUploadButtonProps> = (props) => {
-    const {
-        error,
-        onHandleButtonClick,
-        dragActive,
-        invalidType,
-        setError,
-        invalidMessage,
-        name,
-    } = props;
-
-    // ======================= EFFECTS
-    useEffect(() => {
-        if (invalidType && setError) {
-            setError(name, {
-                type: "is-valid-type",
-                message: invalidMessage,
-            });
-        }
-    }, [invalidMessage, invalidType, name, setError]);
+    const { error, onHandleButtonClick, dragActive } = props;
 
     // =============== VARIABLES
     const isError = error?.message;
@@ -60,7 +42,7 @@ export const FileUploadButton: React.FC<FileUploadButtonProps> = (props) => {
                 </Typography>
 
                 <Typography fontSize={"0.75rem"} color={"#6B7280"}>
-                    Text File only
+                    Text file only up to {fileSize}
                 </Typography>
             </Stack>
         );
