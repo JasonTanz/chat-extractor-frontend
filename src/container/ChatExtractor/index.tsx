@@ -7,6 +7,9 @@ import { size } from "lodash";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { FieldValues } from "./props";
+import toast from "react-hot-toast";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { yupSchema } from "./validation";
 
 /**
  * ===========================
@@ -22,6 +25,7 @@ export const ChatExtractorContainer: React.FC = () => {
         formState: { errors },
         handleSubmit,
     } = useForm<FieldValues>({
+        resolver: yupResolver(yupSchema),
         mode: "all",
     });
 
@@ -34,6 +38,11 @@ export const ChatExtractorContainer: React.FC = () => {
         onCompleted: (response) => {
             const responseData = response.data.data;
             setData([...responseData]);
+        },
+        onError(res) {
+            const errorMessage =
+                res?.response?.data?.message || "Something went wrong";
+            toast.error(errorMessage);
         },
     });
 
@@ -78,7 +87,6 @@ export const ChatExtractorContainer: React.FC = () => {
                         sx={{
                             borderRadius: ".55rem",
                             mt: ".5rem",
-                            width: "20%",
                         }}
                         type="submit"
                         disabled={isDisabled}

@@ -26,15 +26,11 @@ export const FileUploadedArea: React.FC<FileUploadAreaProps> = (props) => {
     // =============== STATE
     const [files, setFiles] = useState<File[]>([]);
     const [dragActive, setDragActive] = useState<boolean>(false);
-    const [isInvalidType, setIsInvalidType] = useState<boolean>(false);
 
     // ================ EFFECTS
     useEffect(() => {
         setFiles(value ?? []);
     }, [value]);
-
-    // ================ HELPER FUNCTION
-    const checkIsInvalid = (file: File) => acceptType.includes(file.type);
 
     // =============== VARIABLES
     const error: any = get(errors, name);
@@ -62,13 +58,6 @@ export const FileUploadedArea: React.FC<FileUploadAreaProps> = (props) => {
             let droppedFiles: File[] = Array.from(e.dataTransfer.files);
             if (isEmpty(droppedFiles)) return;
 
-            const isValid = droppedFiles.filter((i) => !checkIsInvalid(i));
-            if (!isEmpty(isValid)) {
-                setIsInvalidType(true);
-                droppedFiles = droppedFiles.filter((file) =>
-                    checkIsInvalid(file)
-                );
-            }
             setFiles((prevFiles) => [...prevFiles, ...droppedFiles]);
             onChange?.([...files, ...droppedFiles]);
         }
@@ -77,14 +66,7 @@ export const FileUploadedArea: React.FC<FileUploadAreaProps> = (props) => {
     const onHandleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const target = e.target as HTMLInputElement;
         let selectedFiles: File[] = Array.from(target.files as FileList);
-        const isValid = selectedFiles.filter((i) => !checkIsInvalid(i));
         if (isEmpty(selectedFiles)) return;
-        if (!isEmpty(isValid)) {
-            setIsInvalidType(true);
-            selectedFiles = selectedFiles.filter((file) =>
-                checkIsInvalid(file)
-            );
-        }
         const fileList = files;
         fileList.push(...selectedFiles);
         setFiles([...fileList]);
@@ -101,7 +83,19 @@ export const FileUploadedArea: React.FC<FileUploadAreaProps> = (props) => {
     // =============== RENDER FUNCTIONS
     const renderFilesPreview = () => {
         return (
-            <Grid container spacing={2} pt={2}>
+            <Grid
+                container
+                spacing={2}
+                mt={2.5}
+                maxHeight={{
+                    xs: "6rem",
+                    sm: "8rem",
+                    md: "12rem",
+                }}
+                sx={{
+                    overflowY: "auto",
+                }}
+            >
                 {files.map((file, i) => (
                     <Grid item key={i}>
                         <UploadedFile
@@ -140,10 +134,6 @@ export const FileUploadedArea: React.FC<FileUploadAreaProps> = (props) => {
                     error={error}
                     onHandleButtonClick={onHandleButtonClick}
                     dragActive={dragActive}
-                    setError={setError}
-                    name={name}
-                    invalidMessage={"Invalid File Type"}
-                    invalidType={isInvalidType}
                 />
                 {error && (
                     <FormHelperText error>{error?.message}</FormHelperText>
