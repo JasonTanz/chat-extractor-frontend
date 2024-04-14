@@ -42,7 +42,7 @@ export const FileUploadButton: React.FC<FileUploadButtonProps> = (props) => {
                 </Typography>
 
                 <Typography fontSize={"0.75rem"} color={"#6B7280"}>
-                    Text file only up to {fileSize}
+                    Text file (.txt) only up to {fileSize}
                 </Typography>
             </Stack>
         );
